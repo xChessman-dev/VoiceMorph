@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/VoiceMorph.App/VoiceMorph.App.csproj" />
+  <Project Path="tests/VoiceMorph.App.SelfTest/VoiceMorph.App.SelfTest.csproj" />
+</Solution>

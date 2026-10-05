@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="tile" x1="128" y1="8" x2="128" y2="248" gradientUnits="userSpaceOnUse"><stop stop-color="#1B2341"/><stop offset="1" stop-color="#11162A"/></linearGradient>
+    <linearGradient id="source" x1="92" y1="68" x2="92" y2="197" gradientUnits="userSpaceOnUse"><stop stop-color="#B2A7FF"/><stop offset="1" stop-color="#796CEC"/></linearGradient>
+    <linearGradient id="morphed" x1="161" y1="68" x2="161" y2="197" gradientUnits="userSpaceOnUse"><stop stop-color="#D2E9FF"/><stop offset="1" stop-color="#88ACFF"/></linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="60" fill="url(#tile)" stroke="#3C4772" stroke-width="2"/>
+  <path d="M50 68H90L135 160L115 197Z" fill="url(#source)"/>
+  <path d="M167 68H207L146 197H115L135 158Z" fill="url(#morphed)"/>
+</svg>

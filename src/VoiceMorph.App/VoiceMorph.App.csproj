@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>VoiceMorph.App</RootNamespace>
+    <AssemblyName>VoiceMorph</AssemblyName>
+    <Platforms>x64</Platforms>
+    <ApplicationIcon>Assets\VoiceMorph.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="3.1.0" />
+    <Resource Include="Assets\VoiceMorph.ico" />
+    <Resource Include="Assets\VoiceMorph.png" />
+    <Content Include="..\..\runtime\**\*" Exclude="..\..\runtime\**\__pycache__\**;..\..\runtime\**\*.pyc" Link="runtime\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
