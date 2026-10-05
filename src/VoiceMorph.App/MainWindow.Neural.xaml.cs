@@ -93,8 +93,8 @@ public partial class MainWindow
                 if (!NeuralRuntimeFilesPresent)
                 {
                     _viewModel.StatusTitle = "RVC-движок не установлен";
-                    _viewModel.StatusDetail = "Импорт моделей доступен. Для голоса нужен движок на F.";
-                    NeuralRuntimeStatus.Text = "Установи движок RVC на F, затем нажми «Проверить движок».";
+                    _viewModel.StatusDetail = "Импорт моделей доступен. Для голоса нужен локальный движок RVC.";
+                    NeuralRuntimeStatus.Text = "Установи движок RVC и укажи VOICEMORPH_RUNTIME_ROOT, затем нажми «Проверить движок».";
                 }
             }
             else { _viewModel.ApplyRunningState(false); MainTabs.SelectedItem = DspVoicesTab; }
@@ -163,7 +163,7 @@ public partial class MainWindow
                     }
                 }
             }
-            NeuralOperationStatus.Text = "Импорт готов. Файлы скопированы на F, содержимое модели ещё не запускалось.";
+            NeuralOperationStatus.Text = "Импорт готов. Файлы скопированы в локальную библиотеку, содержимое модели ещё не запускалось.";
         });
     }
 
@@ -211,7 +211,7 @@ public partial class MainWindow
         var status = await NeuralClient.ProbeAsync(token);
         _runtimeProbeReady = status.Available;
         NeuralRuntimeStatus.Text = status.Message + (status.CudaAvailable ? "\nGPU: " + status.DeviceName : "");
-        NeuralOperationStatus.Text = status.Available ? "Движок готов. Теперь проверь выбранную модель." : "Импорт доступен, но преобразование ждёт установки движка на F.";
+        NeuralOperationStatus.Text = status.Available ? "Движок готов. Теперь проверь выбранную модель." : "Импорт доступен, но преобразование ждёт установки локального движка RVC.";
         if (!status.Available) { _neuralClient?.Dispose(); _neuralClient = null; }
     });
 

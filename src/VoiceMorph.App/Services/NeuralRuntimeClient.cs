@@ -236,7 +236,7 @@ public sealed class NeuralRuntimeClient : IDisposable, IAsyncDisposable
         var python = _pythonPath ?? FindPython(_runtimeRoot);
         if (_process is { HasExited: false } && _activePythonPath == python) return _process;
         StopWorkerCore();
-        if (python is null || !File.Exists(python)) throw new FileNotFoundException("Python нейродвижка не установлен на F:.");
+        if (python is null || !File.Exists(python)) throw new FileNotFoundException("Python нейродвижка не найден. Проверь VOICEMORPH_RUNTIME_ROOT или VOICEMORPH_PYTHON.");
         if (!File.Exists(_workerPath)) throw new FileNotFoundException("Не найден локальный RVC-worker.");
         var start = new ProcessStartInfo(python)
         {

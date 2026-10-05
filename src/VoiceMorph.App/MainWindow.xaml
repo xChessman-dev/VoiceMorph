@@ -41,7 +41,7 @@
          <ListBox x:Name="NeuralModelsList" ItemContainerStyle="{StaticResource NeuralModelItemStyle}" SelectionChanged="NeuralModel_Changed" MinHeight="180" ScrollViewer.VerticalScrollBarVisibility="Disabled">
           <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16"/><TextBlock Text="{Binding Summary}" Style="{StaticResource HelperTextStyle}" Margin="0,6,0,0"/></StackPanel></DataTemplate></ListBox.ItemTemplate>
          </ListBox>
-         <TextBlock x:Name="ModelImportStatus" Text="Модели и движок хранятся на F. Загружай только файлы из доверенного источника: проверка формата не гарантирует безопасность." Style="{StaticResource HelperTextStyle}" Margin="0,12,0,0"/>
+         <TextBlock x:Name="ModelImportStatus" Text="Модели и движок хранятся локально. Загружай только файлы из доверенного источника: проверка формата не гарантирует безопасность." Style="{StaticResource HelperTextStyle}" Margin="0,12,0,0"/>
         </StackPanel></Border>
         <Border Grid.Column="2" Style="{StaticResource CardStyle}" VerticalAlignment="Top"><StackPanel>
          <TextBlock x:Name="SelectedModelTitle" Text="Модель не выбрана" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
