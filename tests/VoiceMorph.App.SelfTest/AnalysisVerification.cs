@@ -105,6 +105,36 @@ internal static class AnalysisVerification
                   !Directory.EnumerateFiles(directory, ".voicemorph-*.tmp").Any(),
                 "Параллельные чтения и записи сохраняют целый JSON без оставшихся временных файлов");
 
+            var beforeLockedSave = await File.ReadAllBytesAsync(storePath);
+            using (var reader = new FileStream(storePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var pendingSave = store.SaveAsync(new(1, source, [profile with { Name = "После блокировки" }]));
+                await Task.Delay(100);
+                check(!pendingSave.IsCompleted && File.ReadAllBytes(storePath).SequenceEqual(beforeLockedSave),
+                    "Временная блокировка не разрушает предыдущий снимок и не теряет сохранение");
+                reader.Dispose();
+                await pendingSave.WaitAsync(TimeSpan.FromSeconds(3));
+            }
+            check((await store.LoadAsync()).Profiles.Single().Name == "После блокировки",
+                "Сохранение завершается после снятия временной блокировки Windows");
+
+            var beforeCancelledCommit = await File.ReadAllBytesAsync(storePath);
+            using (var reader = new FileStream(storePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var commitCancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(60)))
+            {
+                try
+                {
+                    await store.SaveAsync(new(1, null, []), commitCancellation.Token);
+                    check(false, "Отмена ожидания блокировки сохраняет прежний профиль");
+                }
+                catch (OperationCanceledException)
+                {
+                    check(File.ReadAllBytes(storePath).SequenceEqual(beforeCancelledCommit) &&
+                          !Directory.EnumerateFiles(directory, ".voicemorph-*.tmp").Any(),
+                        "Отмена ожидания блокировки сохраняет прежний профиль без временных файлов");
+                }
+            }
+
             var synchronousClose = Task.Factory.StartNew(() =>
             {
                 SynchronizationContext.SetSynchronizationContext(new NonPumpingContext());

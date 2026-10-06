@@ -26,10 +26,17 @@ public sealed class VoiceProfileStore
 
     public async Task<VoiceProfileData> LoadAsync(CancellationToken cancellationToken = default)
     {
-        var path = Path.Combine(_directory, "voice-profiles.json");
-        if (!File.Exists(path)) return VoiceProfileData.Empty;
-        var document = await ReadAsync<VoiceProfileData>(path, cancellationToken).ConfigureAwait(false);
-        return ValidateData(document);
+        // Windows replacement can briefly mark the previous file for deletion. Keep local
+        // readers out of the commit, rather than racing a new open against that transition.
+        await _writeLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var path = Path.Combine(_directory, "voice-profiles.json");
+            if (!File.Exists(path)) return VoiceProfileData.Empty;
+            var document = await ReadAsync<VoiceProfileData>(path, cancellationToken).ConfigureAwait(false);
+            return ValidateData(document);
+        }
+        finally { _writeLock.Release(); }
     }
 
     public async Task SaveAsync(VoiceProfileData data, CancellationToken cancellationToken = default)
@@ -164,8 +171,23 @@ public sealed class VoiceProfileStore
             }
             // Cancellation before this commit preserves the previous successful snapshot.
             // Once the atomic rename commits, the operation has succeeded even if cancellation races it.
-            cancellationToken.ThrowIfCancellationRequested();
-            File.Move(temporary, path, overwrite: true);
+            for (var attempt = 0; ; attempt++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                try
+                {
+                    File.Move(temporary, path, overwrite: true);
+                    break;
+                }
+                catch (Exception exception) when (attempt < 5 &&
+                    exception is IOException or UnauthorizedAccessException &&
+                    (exception.HResult & 0xFFFF) is 5 or 32 or 33)
+                {
+                    // A scanner or another reader may hold a short Windows sharing lock.
+                    // Retry the same atomic commit; never delete/truncate the good snapshot.
+                    await Task.Delay(20 * (1 << attempt), cancellationToken).ConfigureAwait(false);
+                }
+            }
         }
         finally
         {
