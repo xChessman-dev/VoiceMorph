@@ -20,6 +20,10 @@
 - Ограниченная очередь обработки, показатели CPU/RAM и оценка задержки.
 - Вывод в виртуальный аудиокабель и подключение источника OBS.
 
+## Готовая сборка
+
+Тестовые ZIP для Windows 11 x64: [Releases](https://github.com/xChessman-dev/VoiceMorph/releases). Распакуйте всю папку и запустите `VoiceMorph.exe`; .NET включён. Инструкции и ограничения: [INSTALL.md](INSTALL.md). DSP работает сразу; RVC-runtime и модели устанавливаются отдельно.
+
 ## Сборка
 
 ```powershell
